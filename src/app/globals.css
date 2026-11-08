@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* Livora: warm coral on a clean light UI (dark mode follows the device). */
+:root {
+  --bg: #fbf8f7;
+  --surface: #ffffff;
+  --surface-2: #f5efed;
+  --text: #2a2024;
+  --muted: #7a6a6f;
+  --border: #ece4e1;
+  --brand: #e5484d;
+  --brand-strong: #cf3c41;
+  --brand-ink: #ffffff;
+  --brand-soft: #fdecec;
+  --warn: #b45309;
+  --warn-soft: #fef3e2;
+  --danger: #c2262e;
+  --danger-soft: #fdecec;
+  --ok: #18794e;
+  --ok-soft: #e9f7ef;
+  --shadow: 0 1px 2px rgb(42 32 36 / 0.04), 0 8px 24px rgb(42 32 36 / 0.06);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161213;
+    --surface: #1f1a1b;
+    --surface-2: #2a2324;
+    --text: #f3eceb;
+    --muted: #b0a2a4;
+    --border: #3a3133;
+    --brand: #ff6b70;
+    --brand-strong: #ff858a;
+    --brand-ink: #2b0a0c;
+    --brand-soft: #3a1c1e;
+    --warn: #fbbf24;
+    --warn-soft: #3a2c10;
+    --danger: #f87171;
+    --danger-soft: #3b1717;
+    --ok: #4ade80;
+    --ok-soft: #13301f;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-sans: var(--font-geist-sans);
+}
+
+/* Anything scrolled into view (focus, anchors) clears the sticky header and the fixed bottom bars. */
+html {
+  scroll-padding-top: 4.5rem;
+  scroll-padding-bottom: 7rem;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* stops iOS zoom on focus */
+}
+
+@utility card {
+  @apply rounded-3xl border border-line bg-surface p-4;
+  box-shadow: var(--shadow);
+}
+
+/* Pressable: instant feedback that the UI heard the tap. */
+@utility pressable {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+}
+
+@utility btn {
+  @apply pressable inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold select-none disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-brand-ink;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--brand-strong);
+    }
+  }
+}
+@utility btn-secondary {
+  @apply btn border border-line bg-surface text-text;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--surface-2);
+    }
+  }
+}
+@utility btn-danger {
+  @apply btn bg-danger text-white;
+}
+@utility field {
+  @apply w-full rounded-2xl border border-line bg-surface-2 px-4 py-3 text-text outline-none;
+  transition: border-color 150ms ease, background-color 150ms ease;
+  &:focus {
+    border-color: var(--brand);
+    background: var(--surface);
+  }
+}
+@utility label {
+  @apply mb-1.5 block text-sm font-semibold;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-medium text-muted;
+}
+/* Big pill choice, DormMate-style. Pair with a visually hidden radio/checkbox inside. */
+@utility option {
+  @apply pressable flex min-h-12 w-full cursor-pointer items-center justify-center rounded-full border border-line bg-surface px-4 py-2.5 text-center text-sm font-medium;
+  &:has(input:checked) {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--brand-ink);
+  }
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+/* Modal dialog: fades and scales from 0.96 (never 0), centered origin. */
+dialog.sheet {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+dialog.sheet:not([open]) {
+  opacity: 0;
+  transform: scale(0.98);
+  transition-duration: 140ms;
+}
+dialog.sheet::backdrop {
+  background: rgb(20 10 12 / 0.45);
+  transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete;
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-property: opacity, background-color, border-color, color !important;
+  }
+  .pressable:active,
+  [class*="btn"]:active,
+  [class~="option"]:active {
+    transform: none !important;
+  }
+}
